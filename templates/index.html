@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Rule-Based Chatbot</title>
+
+    <!-- CSS Link -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="chat-container">
+
+        <h2>🤖 Rule-Based Chatbot</h2>
+
+        <!-- Chat display -->
+        <div id="chat-box">
+            <p><b>🤖 Available Commands</b></p>
+            <ul>
+                <li>hello ,hi ,how are you ,what is your name ,help ,bye</li>
+            </ul>
+        </div>
+
+        <!-- Input -->
+        <input type="text"
+               id="user-input"
+               placeholder="Type your message">
+
+        <!-- Button -->
+        <button onclick="sendMessage()">Send</button>
+
+    </div>
+
+<script>
+
+async function sendMessage() {
+
+    // Get input box
+    let input = document.getElementById("user-input");
+
+    // Get user message
+    let message = input.value;
+
+    // Get chat box
+    let chatBox = document.getElementById("chat-box");
+
+    // Display user message
+    chatBox.innerHTML +=
+    "<p><b>You:</b> " + message + "</p>";
+
+    // Send message to Flask backend
+    let response = await fetch("/chat", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            message: message
+        })
+    });
+
+    // Receive response
+    let data = await response.json();
+
+    // Display bot reply
+    chatBox.innerHTML +=
+    "<p><b>Bot:</b> " + data.reply + "</p>";
+
+    // Clear input box
+    input.value = "";
+
+}
+
+</script>
+
+</body>
+</html>
